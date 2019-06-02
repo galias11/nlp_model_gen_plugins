@@ -15,7 +15,6 @@ setuptools.setup(
     include_package_data=True,
     url='https://github.com/galias11/nlp_model_gen_plugins',
     packages=setuptools.find_packages(),
-    scripts=['scripts/nlp_model_gen_install.sh'],
     classifiers=[
         'Programming Language :: Python :: 3',
         'License :: OSI Approved :: MIT License',
