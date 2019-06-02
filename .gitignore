@@ -6,3 +6,8 @@ __pycache__
 
 # VS code settings
 .vscode/*
+
+#build
+build
+dist
+nlp_model_gen_plugins.egg-info
