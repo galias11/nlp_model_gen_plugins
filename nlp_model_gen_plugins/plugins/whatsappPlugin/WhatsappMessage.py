@@ -12,6 +12,8 @@ class WhatsappMessage:
         self.__analyzed = False
         self.__analysis_result = dict({})
         self.__token_frequency = dict({})
+        self.__analysis_error = False
+        self.__error_description = ''
 
     def __build_results_dict(self, results):
         return [result.to_dict() for result in results]
@@ -19,10 +21,16 @@ class WhatsappMessage:
     def get_token_frequency(self):
         return self.__token_frequency
 
+    def get_error_description(self):
+        return self.__error_description
+
     def is_analyzed(self):
         if not self.__analyzed:
             self.check_analysis_task()
         return self.__analyzed
+
+    def has_error(self):
+        return self.__analysis_error
 
     def check_analysis_task(self):
         if not self.__nlp_admin_instance or self.__analyzed:
@@ -31,12 +39,8 @@ class WhatsappMessage:
         if taks_status['status'] == TASK_STATUS_FINISHED:
             self.__analyzed = True
             if taks_status['error']['active']:
-                self.__analysis_result = {
-                    'error': True,
-                    'ner_results': [],
-                    'tokenizer_results': [],
-                    'token_frequency': {}
-                }
+                self.__analysis_error = True
+                self.__error_description = taks_status['error']['description_data']
             else:
                 self.__analysis_result = {
                     'error': False,

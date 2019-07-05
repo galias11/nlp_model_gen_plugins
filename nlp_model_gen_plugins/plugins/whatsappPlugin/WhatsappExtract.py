@@ -31,6 +31,7 @@ class WhatsappExtract:
         self.__nlp_admin_instance = nlp_admin_instance
         self.__model_id = model_id
         self.__initialize(files)
+        self.__error = False
 
     def __get_message_field(self, message_parts, field):
         for part in message_parts:
@@ -65,27 +66,27 @@ class WhatsappExtract:
             self.__process_file(file)
 
     def get_extracts_list(self):
-        if not self.is_analysed():
+        if not self.get_status()['is_analyzed']:
             return None
         return [message.to_dict() for message in self.__extracts_list]
 
     def get_ner_positives(self):
-        if not self.is_analysed():
+        if not self.get_status()['is_analyzed']:
             return None
         return [message.to_dict() for message in self.__extracts_list if message.to_dict()['analysis_result']['ner_positive']]
 
     def get_tokenizer_positives(self):
-        if not self.is_analysed():
+        if not self.get_status()['is_analyzed']:
             return None
         return [message.to_dict() for message in self.__extracts_list if message.to_dict()['analysis_result']['tokenizer_positive']]
 
     def get_positives_results(self):
-        if not self.is_analysed():
+        if not self.get_status()['is_analyzed']:
             return None
         return [message.to_dict() for message in self.__extracts_list if message.to_dict()['analysis_result']['ner_positive'] or message.to_dict()['analysis_result']['tokenizer_positive']]
     
     def get_token_frequency(self):
-        if not self.is_analysed():
+        if not self.get_status()['is_analyzed']:
             return None
         frequency_counter = dict({})
         for message in self.__extracts_list:
@@ -101,10 +102,12 @@ class WhatsappExtract:
             count_results[key] = frequency_counter[key].most_common()
         return count_results
 
-    def is_analysed(self):
+    def get_status(self):
         if not self.__nlp_admin_instance:
-            return False
+            return {'is_analyzed': False, 'has_error': True}
         for extract in self.__extracts_list:
             if not extract.is_analyzed():
-                return False
-        return True
+                return {'is_analyzed': False, 'has_error': False}
+            if extract.has_error():
+                return {'is_analyzed': False, 'has_error': True}
+        return {'is_analyzed': True, 'has_error': False}
