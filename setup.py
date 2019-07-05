@@ -6,7 +6,7 @@ with open('README.md', 'r') as fh:
 
 setuptools.setup(
     name='nlp_model_gen_plugins',
-    version='0.1.1',
+    version='0.1.2',
     author='Gerardo Alias',
     author_email='alias_gerardo@yahoo.com.ar',
     description='NLP admin plugins',
